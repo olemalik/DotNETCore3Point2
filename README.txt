@@ -1,0 +1,1 @@
+* I have used MSSQL Database for your reference ii have added the create database and create table 
