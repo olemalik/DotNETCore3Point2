@@ -1,8 +1,7 @@
-CREATE DATABASE al_ansar_db;
+CREATE DATABASE webapi_db;
 
-USE [al_ansar_db]
-GO
-/****** Object:  Table [dbo].[Movie]    Script Date: 6/13/2020 10:55:50 AM ******/
+USE [webapi_db]
+GO 
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

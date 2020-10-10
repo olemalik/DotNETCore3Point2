@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 using WebApi.Entities;
 
 namespace WebApi.Models
@@ -12,16 +9,20 @@ namespace WebApi.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Username { get; set; }
-        public string Token { get; set; }
+        public string JwtToken { get; set; }
 
 
-        public AuthenticateResponse(User user, string token)
+        [JsonIgnore] // refresh token is returned in http only cookie
+        public string RefreshToken { get; set; }
+
+        public AuthenticateResponse(User user, string jwtToken, string refreshToken)
         {
             Id = user.Id;
             FirstName = user.FirstName;
             LastName = user.LastName;
             Username = user.Username;
-            Token = token;
+            JwtToken = jwtToken;
+            RefreshToken = refreshToken;
         }
     }
 }

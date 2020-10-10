@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace WebApi.Entities
 {
-    public class WebApiDbcontext : DbContext
+    public class WebApiDbContext : DbContext
     {
-        public WebApiDbcontext(DbContextOptions<WebApiDbcontext> options)
+        public WebApiDbContext(DbContextOptions<WebApiDbContext> options)
             : base(options)
         {
         }
