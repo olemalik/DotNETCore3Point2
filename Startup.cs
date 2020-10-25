@@ -66,8 +66,8 @@ namespace WebApi
 
             app.UseEndpoints(endpoints =>
             {
-               // endpoints.MapHealthChecks("/healthcheck").WithMetadata(new AllowAnonymousAttribute());
-                endpoints.MapControllers().RequireAuthorization();
+                // endpoints.MapHealthChecks("/healthcheck").WithMetadata(new AllowAnonymousAttribute());
+                endpoints.MapControllers();//.RequireAuthorization();
             });
         }
     }
