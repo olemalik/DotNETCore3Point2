@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -6,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApi.Entities;
 using WebApi.Services;
 
 namespace WebApi.Helpers
@@ -24,10 +27,15 @@ namespace WebApi.Helpers
         public async Task Invoke(HttpContext context, IUserService userService)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
+            var endpoint = context.GetEndpoint();
             if (token != null)
+            {
                 attachUserToContext(context, userService, token);
-
+            }
+            else if (endpoint?.Metadata?.GetMetadata<IAllowAnonymous>() is object)
+            {
+                context.Items.Add("User", new User { Id = 0 });
+            }  
             await _next(context);
         }
 
@@ -53,11 +61,24 @@ namespace WebApi.Helpers
                 // attach user to context on successful jwt validation
                 context.Items["User"] = userService.GetById(userId);
             }
-            catch
+            catch (SecurityTokenValidationException stvex)
             {
-                // do nothing if jwt validation fails
-                // user is not attached to context so request won't have access to secure routes
+                // The token failed validation!
+                // TODO: Log it or display an error.
+                throw new Exception($"Token failed validation: {stvex.Message}");
             }
+            catch (ArgumentException argex)
+            {
+                // The token was not well-formed or was invalid for some other reason.
+                // TODO: Log it or display an error.
+                throw new Exception($"Token was invalid: {argex.Message}");
+            }
+            //catch(Exception ex)
+            //{
+            //    //context. (new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized });
+            //    // do nothing if jwt validation fails
+            //    // user is not attached to context so request won't have access to secure routes
+            //}
         }
     }
 }
